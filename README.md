@@ -32,7 +32,7 @@ Stochastic programming is a framework for modeling optimization problems that in
 ## Notation
 
 ### Sets
-- $$ i $$: Index for product type (1: wheat, 2: corn, 3: high-price sugar beet, 4: low-price sugar beet, $$ i \in \{1, 2, 3, 4\} $$)
+- $ i $: Index for product type (1: wheat, 2: corn, 3: high-price sugar beet, 4: low-price sugar beet, $ i \in \{1, 2, 3, 4\} $)
 - $$ t $$: Index for time period ($$ t \in \{1, 2, 3\} $$)
 - $$ k $$: Index for scenario
 

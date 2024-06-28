@@ -2,10 +2,18 @@ import cvxpy as cp
 import numpy as np
 import re
 
+# Generate the scenario_T data
+number_of_scenario = 3
+scenario_T = np.column_stack((
+    np.linspace(2, 3, number_of_scenario), 
+    np.linspace(2.4, 3.6, number_of_scenario), 
+    np.linspace(16, 24, number_of_scenario)
+)).tolist() 
 
-xi = {"XI 1": (3, 3.6, 24),
-      "XI 2": (2.5, 3, 20),
-      "XI 3": (2, 2.4, 16)} # random variable
+# Create Random Variable's dictionary
+xi = {}
+for idx, s in enumerate(scenario_T):
+    xi[f"XI {idx+1}"] = tuple(s)
 
 A = np.array([[1, 1, 1]])
 b = np.array([500])
@@ -19,7 +27,7 @@ f = 4 # total number of constraints
 y1k = y1, w1k = y2, y2k = y3, w2k = y4, w3k = y5, w4k = y6
 """
 
-p = np.array([1/3, 1/3, 1/3]) # scenario probabilities
+p = np.array([1/len(scenario_T) for i in range(len(scenario_T))]) # scenario probabilities
 
 W = np.array([[-1, 1, 0, 0, 0, 0],
               [0, 0, -1, 1, 0, 0],

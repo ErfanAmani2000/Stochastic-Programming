@@ -257,14 +257,6 @@ class Nested_Decomposition_Optimizer:
         
         # Print the objective function value and optimal values of stage 1 variables
         print("The objective function and its corresponding variables' optimal value are: ", NLDS[1].objective.value())
-        for variable in NLDS[1].variables():
-            print(f"{variable.name}: {variable.value()}")
-        
-        # Print the optimal values of variables for all scenarios in stage 3
-        for i in range(self.total_scenario):
-            for variable in NLDS[3][i].variables():
-                print(f"{variable.name}: {variable.value()}")
-
         return NLDS
 
 
@@ -336,3 +328,17 @@ optimizer = Nested_Decomposition_Optimizer(
 
 # Run the nested decomposition algorithm
 NLDS = optimizer.run_algorithm()
+
+# Print the optimal values of variables for all scenarios in stage 1
+for variable in NLDS[1].variables():
+    print(f"{variable.name}: {variable.value()}")
+
+# Print the optimal values of variables for all scenarios in stage 2
+for i in range(10):
+    for variable in NLDS[2][i].variables():
+        print(f"{variable.name}: {variable.value()}")
+
+# Print the optimal values of variables for all scenarios in stage 3
+for i in range(100):
+    for variable in NLDS[3][i].variables():
+        print(f"{variable.name}: {variable.value()}")

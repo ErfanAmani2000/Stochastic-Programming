@@ -33,13 +33,13 @@ Stochastic programming is a framework for modeling optimization problems that in
 
 The mathematical model solved using these algorithms is a simple stochastic farmer yield problem which is given as follows:
 
-\[
+$$
 \min \left\{ \sum_{i=1}^{3} \sum_{t=1}^{2} C_i x_{it} + \sum_{k} p_k \left( \sum_{i=1}^{2} \sum_{t=1}^{2} B_i y_{itk} - \sum_{i=1}^{4} \sum_{t=1}^{2} S_i w_{itk} \right) \right\}
-\]
+$$
 
 subject to:
 
-\[
+$$
 \begin{align}
 (2) & \quad \sum_{i=1}^{3} x_{it} \leq 500 \quad \forall t \\
 (3) & \quad R_k^i x_{it} + y_{itk} - w_{itk} \geq d_i \quad \forall i \in \{1, 2\}, \, \forall t, \, \forall k \\
@@ -48,7 +48,7 @@ subject to:
 (6) & \quad x_{3,1} + x_{3,2} \leq 500 \\
 (7) & \quad x_{it}, y_{itk}, w_{itk} \geq 0 \quad \forall i, \, \forall t, \, \forall k
 \end{align}
-\]
+$$
 
 ## Algorithms
 

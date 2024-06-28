@@ -3,39 +3,43 @@ import numpy as np
 import re
 
 
-xi = {"XI 1": (500, 100, -24, -28),
-      "XI 2": (300, 300, -28, -32)} # random variable
+xi = {"XI 1": (3, 3.6, 24),
+      "XI 2": (2.5, 3, 20),
+      "XI 3": (2, 2.4, 16)} # random variable
 
-A = np.array([[1, 1],
-              [-1, 0],
-              [0, -1]])
-b = np.array([120, -40, -20])
-c = np.array([100, 150])
+A = np.array([[1, 1, 1]])
+b = np.array([500])
+c = np.array([150, 230, 260])
 
 n = c.shape[0] # number of first stage variables
-m = 2 # number of second stage variables
+m = 6 # number of second stage variables
 f = 4 # total number of constraints
 
-p = np.array([0.4, 0.6]) # scenario probabilities
-W = np.array([[6, 10],
-              [8, 5],
-              [1, 0],
-              [0, 1]])              
-T = np.array([[-60, 0],
-              [0, -80],
-              [0, 0],
-              [0, 0]])
+"""
+y1k = y1, w1k = y2, y2k = y3, w2k = y4, w3k = y5, w4k = y6
+"""
+
+p = np.array([1/3, 1/3, 1/3]) # scenario probabilities
+
+W = np.array([[-1, 1, 0, 0, 0, 0],
+              [0, 0, -1, 1, 0, 0],
+              [0, 0, 0, 0, 1, 1],
+              [0, 0, 0, 0, 1, 0]])  
 
 
 def uncertain_params(k):
-    d1, d2, q1, q2 = xi[f"XI {k}"]
-    h = np.array([0, 0, d1, d2])
-    q = np.array([q1, q2])
-    return h, q
+    a1, a2, a3 = xi[f"XI {k}"]
+    h = np.array([-200, -240, 0, 6000])
+    q = np.array([238, -170, 210, -150, -36, -10])
+    T = np.array([[-1*a1, 0, 0],
+                  [0, -1*a2, 0],
+                  [0, 0, -1*a3],
+                  [0, 0, 0]])
+    return h, q, T
 
     
 def optimality_cuts(x_value, k, p=p, W=W):
-    h, q = uncertain_params(k)
+    h, q, T = uncertain_params(k)
     Tx = np.matmul(T, x_value)
 
     y = cp.Variable(m, nonneg=True)
@@ -53,10 +57,10 @@ def optimality_cuts(x_value, k, p=p, W=W):
         return E, e, y.value, pi
 
 
-def feasibility_cuts(x_value, k, W=W, T=T):
+def feasibility_cuts(x_value, k, W=W):
     I = np.identity(f)
     ones = np.ones((f,))
-    h, q = uncertain_params(k)
+    h, q, T = uncertain_params(k)
     Tx = np.matmul(T, x_value)
 
     y = cp.Variable(m, nonneg=True)
@@ -107,10 +111,11 @@ def run_first_iterarion(c=c, A=A, b=b, xi=xi):
 
 v = 0
 y_opt = {}
-epsilon = 1
-main_stop_rule = False
+epsilon = 0.00001
+max_iterations = 25
+consecutive_below_threshold = 0
 cuts, a = run_first_iterarion()
-while not main_stop_rule:
+while v < max_iterations:
     ones = np.ones((1,))
     x = cp.Variable(n, nonneg=True)
     theta = cp.Variable(len(xi))
@@ -149,7 +154,7 @@ while not main_stop_rule:
         except ValueError:
             need_feasible_cut = True
             break
-        h = uncertain_params(k)[0]
+        h, q, T = uncertain_params(k)
         lamda_x += np.matmul(np.reshape(np.array(Pi[k]), newshape=(1, len(T))), h - np.matmul(T, x_opt))
 
     if need_feasible_cut:
@@ -162,18 +167,26 @@ while not main_stop_rule:
 
     lamda_a = 0
     for k in range(1, len(xi)+1):
-        h = uncertain_params(k)[0]
+        h, q, T = uncertain_params(k)
         lamda_a += np.matmul(np.reshape(np.array(Pi[k]), newshape=(1, len(T))), h - np.matmul(T, a))
     
     if abs(np.matmul(c.T, x_opt) + lamda_x - np.matmul(c.T, a) - lamda_a) > epsilon:
         a = x_opt
+        consecutive_below_threshold = 0
     else:
-        main_stop_rule = True
+        consecutive_below_threshold += 1
+        if consecutive_below_threshold >= 3:
+            print("Measure has been below the threshold for 3 consecutive iterations. Stopping.")
+            break
     v += 1
 
 
-print(f'\nOptimal value of Objective function: {sum(opt_theta):.3f}\n')
+for j in range(len(xi)):
+    y_opt[f'XI {j+1}'] = [round(num, 2) for num in y_opt[f'XI {j+1}']]
+
+
+print(f'\nOptimal value of Objective function: {sum(opt_theta):.1f}\n')
 for j in range(n):
-    print(f'Optimal value of a{j+1}: {a[j]:.3f}\n')
+    print(f'Optimal value of x{j+1}: {a[j]:.1f}\n')
 for j in range(len(xi)):
     print(f'Optimal value of y when xi {j+1}: {y_opt[f'XI {j+1}']}\n')

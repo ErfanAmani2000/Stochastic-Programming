@@ -29,9 +29,29 @@ These algorithms are implemented using the [CVXPY](https://www.cvxpy.org/) libra
 
 Stochastic programming is a framework for modeling optimization problems that involve uncertainty. This repository implements several key algorithms used to solve stochastic programming problems. Each algorithm is implemented in Python using the CVXPY and PuLP libraries, which allow for the definition and solving of convex optimization problems.
 
+## Notation
+
+### Sets
+- \( i \): Index for product type (1: wheat, 2: corn, 3: high-price sugar beet, 4: low-price sugar beet, \( i \in \{1, 2, 3, 4\} \))
+- \( t \): Index for time period (\( t \in \{1, 2, 3\} \))
+- \( k \): Index for scenario
+
+### Parameters
+- \( C_i \): Planting cost for product type \( i \)
+- \( B_i \): Purchase cost for product type \( i \)
+- \( S_i \): Selling cost for product type \( i \)
+- \( d_i \): Demand for product type \( i \)
+- \( p_k \): Probability of scenario \( k \)
+- \( R_k^i \): Random yield of planting product type \( i \) under scenario \( k \)
+
+### Decision Variables
+- \( x_{it} \): Hectares of land allocated to planting product type \( i \) in period \( t \)
+- \( y_{itk} \): Amount of product type \( i \) purchased at the end of period \( t \) under scenario \( k \)
+- \( w_{itk} \): Amount of product type \( i \) sold at the end of period \( t \) under scenario \( k \)
+
 ## Mathematical Model
 
-The mathematical model solved using these algorithms is a simple stochastic farmer yield problem which is given as follows:
+The mathematical model solved using these algorithms is a simple stochastic farmer yield problem, which is given as follows:
 
 $$
 \min \left( \sum_{i=1}^{3} \sum_{t=1}^{2} C_i x_{it} + \sum_{k} p_k \left( \sum_{i=1}^{2} \sum_{t=1}^{2} B_i y_{itk} - \sum_{i=1}^{4} \sum_{t=1}^{2} S_i w_{itk} \right) \right)
@@ -49,6 +69,17 @@ $$
 (7) & \quad x_{it}, y_{itk}, w_{itk} \geq 0 \quad \forall i, \, \forall t, \, \forall k
 \end{align}
 $$
+
+## Constraints Description
+
+In the multi-stage farmer problem with crop rotation, the objective is to minimize the total system cost, which includes planting, purchasing, and subtracting the revenue from sales, as given in the objective function (1). 
+
+- Constraint (2) ensures that the available land for planting in each period is 500 hectares.
+- Constraint (3) guarantees the balanced relationship between the land yield, the amount purchased and sold, and the demand for each product (wheat and corn) in each period.
+- Constraint (4) represents the same balance relationship as constraint (3) for sugar beet, for which purchasing is impossible.
+- Constraint (5) indicates the limit on high-price sugar beet sales capacity.
+- Constraint (6) states that no more than 500 hectares can be allocated to sugar beet over the two planting periods.
+- Finally, constraint (7) specifies the non-negativity of the decision variables.
 
 ## Algorithms
 

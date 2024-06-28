@@ -32,22 +32,22 @@ Stochastic programming is a framework for modeling optimization problems that in
 ## Notation
 
 ### Sets
-- $ i $: Index for product type (1: wheat, 2: corn, 3: high-price sugar beet, 4: low-price sugar beet, $ i \in \{1, 2, 3, 4\} $)
-- $$ t $$: Index for time period ($$ t \in \{1, 2, 3\} $$)
-- $$ k $$: Index for scenario
+- \( i \): Index for product type (1: wheat, 2: corn, 3: high-price sugar beet, 4: low-price sugar beet, \( i \in \{1, 2, 3, 4\} \))
+- \( t \): Index for time period (\( t \in \{1, 2, 3\} \))
+- \( k \): Index for scenario
 
 ### Parameters
-- $$ C_i $$: Planting cost for product type $$ i $$
-- $$ B_i $$: Purchase cost for product type $$ i $$
-- $$ S_i $$: Selling cost for product type $$ i $$
-- $$ d_i $$: Demand for product type $$ i $$
-- $$ p_k $$: Probability of scenario $$ k $$
-- $$ R_k^i $$: Random yield of planting product type $$ i $$ under scenario $$ k $$
+- \( C_i \): Planting cost for product type \( i \)
+- \( B_i \): Purchase cost for product type \( i \)
+- \( S_i \): Selling cost for product type \( i \)
+- \( d_i \): Demand for product type \( i \)
+- \( p_k \): Probability of scenario \( k \)
+- \( R_k^i \): Random yield of planting product type \( i \) under scenario \( k \)
 
 ### Decision Variables
-- $$ x_{it} $$: Hectares of land allocated to planting product type $$ i $$ in period $$ t $$
-- $$ y_{itk} $$: Amount of product type $$ i $$ purchased at the end of period $$ t $$ under scenario $$ k $$
-- $$ w_{itk} $$: Amount of product type $$ i $$ sold at the end of period $$ t $$ under scenario $$ k $$
+- \( x_{it} \): Hectares of land allocated to planting product type \( i \) in period \( t \)
+- \( y_{itk} \): Amount of product type \( i \) purchased at the end of period \( t \) under scenario \( k \)
+- \( w_{itk} \): Amount of product type \( i \) sold at the end of period \( t \) under scenario \( k \)
 
 ## Mathematical Model
 
